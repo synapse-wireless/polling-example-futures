@@ -13,8 +13,8 @@ logging.basicConfig(level=logging.INFO)
 #Modify these values for your configuration.
 serial_type = snap.SERIAL_TYPE_SNAPSTICK100
 serial_port = 0
-node_addr = '5de663'
-
+#Replace node_addr with a specific MAC address.  If you leave it as None, the example will use your bridge node.
+node_addr = None
 
 #Snap Connect Futures (SCF) setup.  Check the SCF Quick Start guide for an in-depth explanation of the setup.
 scheduler = apy.ioloop_scheduler.IOLoopScheduler.instance()
@@ -24,13 +24,20 @@ sc = snap.Snap(scheduler=scheduler, funcs={})
 #These will all be automatically handled by Snap Connect Futures.
 scf = future_snap_connect.FutureSnapConnect(sc)
 
-tornado.ioloop.PeriodicCallback(asyncore.poll, 5).start()
 tornado.ioloop.PeriodicCallback(sc.poll_internals, 5).start()
 
 @coroutine
 def setup_serial():
+    global node_addr
     logging.info("Connecting to serial...")
-    yield scf.open_serial(serial_type, serial_port)
+    #The open_serial future returns the bridge node's MAC Address.
+    bridge_address = yield scf.open_serial(serial_type, serial_port)
+    if bridge_address is None:
+        logging.info("Unable to connect to bridge node")
+    else:
+        logging.info("Connected to bridge with MAC: {}".format(bridge_address))
+        if node_addr is None:
+            node_addr = bridge_address
 
 @coroutine
 def cause_temporary_outage(time):
@@ -43,7 +50,11 @@ def simple_callback_rpc():
     #Most Basic example possible. Futures will automatically add the callback handler for you.
     #After the Future is resolved (success or failure) the callback handler will be removed.
     response = yield scf.callback_rpc(node_addr, "generic_response")
-    logging.info("Responses: {}".format(response))
+    #Callback futures are returned as a tuple on success, or None on failure.
+    if response is None:
+        logging.info('Callback not received.')
+    else:
+        logging.info("Responses: {}".format(response[0]))
 
 @coroutine
 def expect_special_callback():
@@ -53,26 +64,37 @@ def expect_special_callback():
     #Futures will only resolve when the proper callback is received.
     yield scf.rpc(node_addr, 'reset_counter')
     response = yield scf.callback_rpc(node_addr, "explicit_response", callback_name="explicit_callback")
-    logging.info("Responses: {}".format(response))
+    if response is None:
+        logging.info('Callback not received.')
+    else:
+        logging.info("Responses: {}".format(response[0]))
 
 @coroutine
 def retries_and_timeouts():
     #Callback_rpc will default to timeout=2 retries=3
     yield cause_temporary_outage(7)
     first_delayed_response = yield scf.callback_rpc(node_addr, "generic_response")
-    logging.info("Responses: {}".format(first_delayed_response))
+    if first_delayed_response is None:
+        logging.info('First delayed callback not received.')
+    else:
+        logging.info("Responses: {}".format(first_delayed_response[0]))
     #Retries and Timeouts can be set manually as well.
     yield cause_temporary_outage(5)
     second_delayed_response = yield scf.callback_rpc(node_addr, "generic_response", retries=1, timeout=1)
-    logging.info("Responses: {}".format(second_delayed_response))
+    if second_delayed_response is None:
+        logging.info('Second delayed callback not received.')
+    else:
+        logging.info("Responses: {}".format(second_delayed_response[0]))
 
 @coroutine
 def dropped_response():
     #If no response is returned before retries are exhausted, the Future resolves and returns 'None'.
     yield cause_temporary_outage(5)
     response = yield scf.callback_rpc(node_addr, "generic_response", retries=0, timeout=1)
-    if not response:
+    if response is None:
         logging.info("'{}' is yielded after retries and timeouts are exhausted.".format(response))
+    else:
+        logging.info("Honestly, we expected this to fail...")
 
 
 @coroutine
