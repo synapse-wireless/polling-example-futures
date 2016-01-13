@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO)
 serial_type = snap.SERIAL_TYPE_SNAPSTICK100
 serial_port = 0
 # Replace node_addr with a specific MAC address.  If you leave it as None, the example will use your bridge node.
-node_addr = '5de662'
+node_addr = None
 
 # Snap Connect Futures (SCF) setup.  Check the SCF Quick Start guide for an in-depth explanation of the setup.
 scheduler = apy.ioloop_scheduler.IOLoopScheduler.instance()
@@ -58,10 +58,13 @@ def simple_callback_rpc():
 
 @coroutine
 def expect_special_callback():
-    # If you need to expect a specific return, you can specify a callback_name. (vmStat and tellVmStat, for example.)
-    # The SNAPpy script will send a mcastRpc with 'the_wrong_callback' the first 2 times
-    # The 3rd retry, it will send a mcastRpc with 'explicit_callback'.
-    # Futures will only resolve when the proper callback is received.
+    '''
+    If you need to expect a specific return, you can specify a callback_name. (vmStat and tellVmStat, for example.)
+    The SNAPpy script will send a mcastRpc with 'the_wrong_callback' the first 2 times
+    The 3rd retry, it will send a mcastRpc with 'explicit_callback'.
+    Futures will only resolve when the proper callback is received.
+    '''
+    # This RPC just resets a counter on the SNAP Node.
     yield scf.rpc(node_addr, 'reset_counter')
     response = yield scf.callback_rpc(node_addr, "explicit_response", callback_name="explicit_callback")
     if response is None:
