@@ -4,7 +4,6 @@ from snapconnect import snap
 from tornado.gen import coroutine
 import tornado
 
-
 import logging
 logging.basicConfig(level=logging.INFO)
 
@@ -96,7 +95,6 @@ def dropped_response():
     else:
         logging.info("Honestly, we expected this to fail...")
 
-
 @coroutine
 def main():
     yield setup_serial()
@@ -108,8 +106,6 @@ def main():
     my_loop.stop()
 
 if __name__ == "__main__":
-
     main()
     my_loop = tornado.ioloop.IOLoop.instance()
     my_loop.start()
-
