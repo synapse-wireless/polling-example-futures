@@ -16,13 +16,13 @@ serial_port = 0
 node_addr = None
 
 # Snap Connect Futures (SCF) setup.  Check the SCF Quick Start guide for an in-depth explanation of the setup.
-scheduler = apy.ioloop_scheduler.IOLoopScheduler.instance()
-
-sc = snap.Snap(scheduler=scheduler, funcs={})
 # Notice that you don't have to pass any callback methods into our SNAP instances.
+sc = snap.Snap(funcs={})
+
 # These will all be automatically handled by Snap Connect Futures.
 scf = SnapConnectFutures(sc)
 
+tornado.ioloop.PeriodicCallback(sc.poll, 5).start()
 tornado.ioloop.PeriodicCallback(sc.poll_internals, 5).start()
 
 @coroutine
