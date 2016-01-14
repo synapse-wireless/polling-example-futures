@@ -44,8 +44,8 @@ made and registered on the SNAP instances function list, a state machine
 created to handle the retry mechanism, a seperate timer mechanism implemented 
 to handle timeouts, and finally, a method to send the rpc.
 
-To run the example, simply connect a SNAP Bridge and, using SNAPBuild or Portal, 
-load 'polling_example_snappy.py' to the node. Assuming the bridge is connected 
+To run the example, simply connect a SNAP Bridge and, using Portal, load 
+'polling_example_snappy.py' to the node. Assuming the bridge is connected 
 on COM Port 1 (modify the config parameters at the top of the example, if needed)
 and Snap Connect Futures is properly installed, you can run:
 $python polling_example_futures.py 
