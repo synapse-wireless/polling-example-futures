@@ -1,10 +1,9 @@
-import future_snap_connect
+from snapconnect_futures import SnapConnectFutures
 from snapconnect import snap
 
 from tornado.gen import coroutine
 
 import tornado
-import asyncore
 import apy
 
 import logging
@@ -22,7 +21,7 @@ scheduler = apy.ioloop_scheduler.IOLoopScheduler.instance()
 sc = snap.Snap(scheduler=scheduler, funcs={})
 # Notice that you don't have to pass any callback methods into our SNAP instances.
 # These will all be automatically handled by Snap Connect Futures.
-scf = future_snap_connect.FutureSnapConnect(sc)
+scf = SnapConnectFutures(sc)
 
 tornado.ioloop.PeriodicCallback(sc.poll_internals, 5).start()
 
