@@ -2,9 +2,7 @@ from snapconnect_futures import SnapConnectFutures
 from snapconnect import snap
 
 from tornado.gen import coroutine
-
 import tornado
-import apy
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -16,14 +14,13 @@ serial_port = 0
 node_addr = None
 
 # Snap Connect Futures (SCF) setup.  Check the SCF Quick Start guide for an in-depth explanation of the setup.
-scheduler = apy.ioloop_scheduler.IOLoopScheduler.instance()
-
-sc = snap.Snap(scheduler=scheduler, funcs={})
 # Notice that you don't have to pass any callback methods into our SNAP instances.
+sc = snap.Snap(funcs={})
+
 # These will all be automatically handled by Snap Connect Futures.
 scf = SnapConnectFutures(sc)
 
-tornado.ioloop.PeriodicCallback(sc.poll_internals, 5).start()
+tornado.ioloop.PeriodicCallback(sc.poll, 5).start()
 
 @coroutine
 def setup_serial():
@@ -48,7 +45,7 @@ def cause_temporary_outage(time):
 def simple_callback_rpc():
     # Most Basic example possible. Futures will automatically add the callback handler for you.
     # After the Future is resolved (success or failure) the callback handler will be removed.
-    response = yield scf.callback_rpc(node_addr, "generic_response")
+    response = yield scf.callback_rpc(node_addr, "simple_call")
     # Callback futures are returned as a tuple on success, or None on failure.
     if response is None:
         logging.info('Callback not received.')
@@ -65,7 +62,7 @@ def expect_special_callback():
     '''
     # This RPC just resets a counter on the SNAP Node.
     yield scf.rpc(node_addr, 'reset_counter')
-    response = yield scf.callback_rpc(node_addr, "explicit_response", callback_name="explicit_callback")
+    response = yield scf.callback_rpc(node_addr, "explicit_call", callback_name="explicit_response")
     if response is None:
         logging.info('Callback not received.')
     else:
@@ -75,14 +72,14 @@ def expect_special_callback():
 def retries_and_timeouts():
     # Callback_rpc will default to timeout=2 retries=3
     yield cause_temporary_outage(7)
-    first_delayed_response = yield scf.callback_rpc(node_addr, "generic_response")
+    first_delayed_response = yield scf.callback_rpc(node_addr, "delay_call_one")
     if first_delayed_response is None:
         logging.info('First delayed callback not received.')
     else:
         logging.info("Responses: {}".format(first_delayed_response[0]))
     # Retries and Timeouts can be set manually as well.
     yield cause_temporary_outage(5)
-    second_delayed_response = yield scf.callback_rpc(node_addr, "generic_response", retries=1, timeout=1)
+    second_delayed_response = yield scf.callback_rpc(node_addr, "delay_call_two", retries=1, timeout=1)
     if second_delayed_response is None:
         logging.info('Second delayed callback not received.')
     else:
@@ -92,12 +89,11 @@ def retries_and_timeouts():
 def dropped_response():
     # If no response is returned before retries are exhausted, the Future resolves and returns 'None'.
     yield cause_temporary_outage(5)
-    response = yield scf.callback_rpc(node_addr, "generic_response", retries=0, timeout=1)
+    response = yield scf.callback_rpc(node_addr, "dropped_call", retries=0, timeout=1)
     if response is None:
         logging.info("'{}' is yielded after retries and timeouts are exhausted.".format(response))
     else:
         logging.info("Honestly, we expected this to fail...")
-
 
 @coroutine
 def main():
@@ -110,8 +106,6 @@ def main():
     my_loop.stop()
 
 if __name__ == "__main__":
-
     main()
     my_loop = tornado.ioloop.IOLoop.instance()
     my_loop.start()
-
