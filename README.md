@@ -26,7 +26,7 @@ retry/timeout mechanisms to help provide more reliable communications with less
 overhead. This lends itself to creating much more straight-forward code which, 
 in turn, means faster iteration and easier bug-fixes in the future.
 
- === Using polling_example_futures.py ===
+ === Using polling_example_futures.py and polling_example_snapconnect.py ===
  
 'polling_example_futures.py' is a fairly straight-forward example that attempts
 to highlight some of the value-adding features built-in to SNAP Connect Futures.
@@ -42,7 +42,12 @@ example implemented using SNAP Connect Futures provides a drastic improvement
 over the traditional method which would have required a callback method to be 
 made and registered on the SNAP instances function list, a state machine 
 created to handle the retry mechanism, a seperate timer mechanism implemented 
-to handle timeouts, and finally, a method to send the rpc.
+to handle timeouts, and finally, a method to send the rpc.  Included in this
+example is 'polling_example_snapconnect.py', which is a SNAP Connect
+implementation of the same functionality provided by 'polling_example_futures.py'.
+While it is entirely possible to create the exact same application using only
+SNAP Connect, utilizing SNAP Connect Futures can create a much more stream-lined
+codebase.
 
 To run the example, simply connect a SNAP Bridge and, using Portal, load 
 'polling_example_snappy.py' to the node. Assuming the bridge is connected 
