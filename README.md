@@ -77,3 +77,7 @@ python polling_example_futures.py
 
 This will run the examples and print out the relevant log data from the SNAP 
 Communications to the console.
+
+## License
+
+Copyright © 2016 [Synapse Wireless](http://www.synapse-wireless.com/), licensed under the [Apache License v2.0](LICENSE.md).
