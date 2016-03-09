@@ -2,7 +2,7 @@
 
 # Polling Example Futures - Basic node-polling using SNAPconnect Futures
 
-`Polling Example Futures` is a fairly straight-forward example that highlights 
+`Polling Example Futures` is a fairly straight-forward example project that highlights 
 some of the value-adding features built into SNAPconnect Futures.
 
 Included is a SNAPpy script with very basic functionality. The script uses very standard SNAPpy practices,
@@ -50,7 +50,7 @@ of the HOOK_RPC_SENT event is sufficient. However, if those outbound RPC calls a
 going to result in INCOMING RPC calls, you need to give the remote nodes a chance to 
 "get a word in edgewise".
 
-## Running This Example
+## How SNAPconnect Futures Helps
 
 The main code has an example of connecting to a bridge node, 5 examples of
 using SNAPconnect Futures new callback_rpc, and handling callbacks with plenty
@@ -66,17 +66,37 @@ While it is entirely possible to create the exact same application using only
 SNAPconnect, utilizing SNAPconnect Futures can create a much more stream-lined
 codebase.
 
-To run the example, simply connect a SNAP Bridge and, using Portal, load 
-`polling_example_snappy.py` to the node. Assuming the bridge is connected 
-on COM Port 1 (modify the config parameters at the top of the example, if needed)
-and SNAPconnect Futures is properly installed, you can run:
+
+
+## Installation
+
+First, download the example, either by cloning the repo with git, or by downloading the zip archive.
+Then, using pip, install the required Python packages for the example, which include SNAPconnect Futures:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Running This Example
+
+Connect a SNAP bridge device and load `snappyImages/polling_example_snappy.py` to the node using Portal.
+Change the parameters at the top of `polling_example_futures.py` based on the type and serial port of the bridge node:
+
+```python
+# Modify these values for your configuration.
+serial_type = snap.SERIAL_TYPE_SNAPSTICK100
+serial_port = 0
+# Replace node_addr with a specific MAC address.  If you leave it as None, the example will use your bridge node.
+node_addr = None
+```
+
+Then, run the example:
 
 ```bash
 python polling_example_futures.py 
 ```
 
-This will run the examples and print out the relevant log data from the SNAP 
-Communications to the console.
+This will run and print out some relevant log data to the console.
 
 ## License
 
