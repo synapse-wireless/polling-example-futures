@@ -101,3 +101,5 @@ This will run and print out some relevant log data to the console.
 ## License
 
 Copyright © 2016 [Synapse Wireless](http://www.synapse-wireless.com/), licensed under the [Apache License v2.0](LICENSE.md).
+
+<!-- meta-tags: vvv-snapconnect, vvv-python, vvv-example -->
