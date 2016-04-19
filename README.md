@@ -16,30 +16,35 @@ to sleep with the radio turned off.
 
 Many SNAP Connect applications tend to follow a standard format:
 
-1. A SNAP Node has some kind of valuable data that needs to be collected.
-1. Create a method on the node to collect and return polled data.
-1. Send callback RPC to the node and wait for a response.
-1. The node's callback response triggers the SNAP Connect method, which 
-kicks off subsequent events.
-1. Repeat ad infinitum.
+1.  A SNAP Node has some kind of valuable data that needs to be collected.
+
+1.  Create a method on the node to collect and return polled data.
+
+1.  Send callback RPC to the node and wait for a response.
+
+1.  The node's callback response triggers the SNAP Connect method, which 
+    kicks off subsequent events.
+
+1.  Repeat ad infinitum.
 
 There are two significant challenges with this:
 
- * The first is that maximizing throughput is difficult, since having 
-your host send messages out to poll your nodes as quickly as it can 
-doesn't leave any bandwidth available for receiving replies from the 
-nodes it is polling. Queueing RPC calls to query nodes as quickly as the 
-host can generate them gets the messages queued for output (until you 
-run out of buffers), but doesn't send the messages efficiently. 
-Triggering the sending of RPC calls from the RPC_SENT hook improves the 
-system efficiency, but still leaves no bandwidth for the host to receive 
-replies from the nodes it is polling.
- * The second is that managing the sending and receiving of messages 
-typically requires setting up event-driven state machines, which can 
-make your code complex, difficult to understand, and even harder to
-maintain. By the time you add in other mechanisms, such as retries or 
-timeouts, or recovery from dropped packets, even relatively simple
-applications can grow unwieldy very quickly.
+-   The first is that maximizing throughput is difficult, since having 
+    your host send messages out to poll your nodes as quickly as it can 
+    doesn't leave any bandwidth available for receiving replies from the 
+    nodes it is polling. Queueing RPC calls to query nodes as quickly as the 
+    host can generate them gets the messages queued for output (until you 
+    run out of buffers), but doesn't send the messages efficiently. 
+    Triggering the sending of RPC calls from the RPC_SENT hook improves the 
+    system efficiency, but still leaves no bandwidth for the host to receive 
+    replies from the nodes it is polling.
+
+-   The second is that managing the sending and receiving of messages 
+    typically requires setting up event-driven state machines, which can 
+    make your code complex, difficult to understand, and even harder to
+    maintain. By the time you add in other mechanisms, such as retries or 
+    timeouts, or recovery from dropped packets, even relatively simple
+    applications can grow unwieldy very quickly.
 
 The Futures package for SNAP Connect solves these problems by simulating 
 a synchronous environment when you can simply wait for data to be 
