@@ -3,18 +3,18 @@
 # Polling Example Futures - Basic node-polling using SNAPconnect Futures
 
 `Polling Example Futures` is a fairly straight-forward example project 
-that highlights some of the value-adding features built into SNAP 
-Connect Futures.
+that highlights some of the value-adding features built into SNAPconnect
+Futures.
 
 The project includes a SNAPpy script with very basic functionality. The 
 script has several functions that simply return values, but also 
-includes a `simulate_outage(time)` function that allows you to have the 
-node simulate breaks in connectivity with the node by putting the node 
-to sleep with the radio turned off.
+includes a `simulate_outage(time)` function that allows you to simulate
+breaks in connectivity with the node by putting the node to sleep with
+the radio turned off.
 
 ## Background
 
-Many SNAP Connect applications tend to follow a standard format:
+Many SNAPconnect applications tend to follow a standard format:
 
 1.  A SNAP Node has some kind of valuable data that needs to be collected.
 
@@ -22,7 +22,7 @@ Many SNAP Connect applications tend to follow a standard format:
 
 1.  Send callback RPC to the node and wait for a response.
 
-1.  The node's callback response triggers the SNAP Connect method, which 
+1.  The node's callback response triggers the SNAPconnect method, which
     kicks off subsequent events.
 
 1.  Repeat ad infinitum.
@@ -46,23 +46,23 @@ There are two significant challenges with this:
     timeouts, or recovery from dropped packets, even relatively simple
     applications can grow unwieldy very quickly.
 
-The Futures package for SNAP Connect solves these problems by simulating 
+The Futures package for SNAPconnect solves these problems by simulating
 a synchronous environment when you can simply wait for data to be 
-returned. SNAP Connect Futures also has built-in retry/timeout 
+returned. SNAPconnect Futures also has built-in retry/timeout
 mechanisms to help provide more reliable communications with less
 overhead. This lends itself to creating much more straight-forward code 
 which, in turn, means faster development and easier bug-fixes in the 
 future.
 
-## How SNAP Connect Futures Helps
+## How SNAPconnect Futures Helps
 
 The main code has an example of connecting to a bridge node, five 
-examples of using the new callback_rpc feature in SNAP Connect Futures, 
+examples of using the new callback_rpc feature in SNAPconnect Futures,
 and examples of handling callbacks, all with plenty of comments 
 throughout.
 
 While not terribly exciting code, a simple 6 line callback example 
-implemented using SNAP Connect Futures provides a drastic improvement 
+implemented using SNAPconnect Futures provides a drastic improvement
 over the traditional method:
 
  * make a callback method and register it on the SNAP instances 
@@ -73,10 +73,10 @@ function list,
 
 This example includes two files, `polling_example_futures.py` and 
 `polling_example_snapconnect.py`, providing parallel examples of the 
-code required to poll a node using SNAP Connect Futures, and having to
+code required to poll a node using SNAPconnect Futures, and having to
 implement the infrastructure to support callbacks, state machines, and 
 timeouts. While it is entirely possible to reproduce the exact same 
-functionality using only SNAP Connect, using SNAP Connect Futures 
+functionality using only SNAPconnect, using SNAPconnect Futures
 creates a much more streamlined codebase.
 
 ## Installation
@@ -84,7 +84,7 @@ creates a much more streamlined codebase.
 First, download the example, either by cloning the repository with Git, 
 or by downloading and unzipping the zip archive. Then, using pip, 
 install the required Python packages for the example, which include 
-SNAP Connect Futures:
+SNAPconnect Futures:
 
 ```bash
 pip install -r requirements.txt
@@ -94,7 +94,7 @@ pip install -r requirements.txt
 
 Connect to a SNAP-powered network and load `snappyImages/polling_example_snappy.py` 
 to a node (your bridge or another node) using Portal. Disconnect Portal, 
-so that your SNAP Connect application can use the bridge node. Change 
+so that your SNAPconnect application can use the bridge node. Change
 the parameters at the top of the `polling_example_futures.py` script 
 based on the type and serial port of the bridge node:
 
