@@ -13,11 +13,11 @@ serial_port = 0
 # Replace node_addr with a specific MAC address.  If you leave it as None, the example will use your bridge node.
 node_addr = None
 
-# Snap Connect Futures (SCF) setup.  Check the SCF Quick Start guide for an in-depth explanation of the setup.
+# SNAPconnect Futures (SCF) setup.  Check the SCF Quick Start guide for an in-depth explanation of the setup.
 # Notice that you don't have to pass any callback methods into our SNAP instances.
 sc = snap.Snap(funcs={})
 
-# These will all be automatically handled by Snap Connect Futures.
+# These will all be automatically handled by SNAPconnect Futures.
 scf = SnapConnectFutures(sc)
 
 tornado.ioloop.PeriodicCallback(sc.poll, 5).start()
@@ -55,8 +55,8 @@ def simple_callback_rpc():
 @coroutine
 def expect_special_callback():
     '''
-    If you need to expect a specific return, you can specify a callback_name. (vmStat and tellVmStat, for example.)
-    The SNAPpy script will send a mcastRpc with 'the_wrong_callback' the first 2 times
+    If you need to expect a specific return, you can specify a callback_name (vmStat and tellVmStat, for example).
+    The SNAPpy script will send a mcastRpc with 'the_wrong_callback' the first 2 times.
     The 3rd retry, it will send a mcastRpc with 'explicit_callback'.
     Futures will only resolve when the proper callback is received.
     '''
