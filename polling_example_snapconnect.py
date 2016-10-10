@@ -7,8 +7,8 @@ serial_port = 0
 
 class SNAPConnectDispatcher(object):
     '''
-    A simple dispatcher that generates a queue of RPCs to be sent while retries and timeouts.  This is meant to help
-    show a realistic side-by-side comparison of the value of utilizing SNAP Connect Futures.  This script has the same
+    A simple dispatcher that generates a queue of RPCs to be sent with retries and timeouts. This is meant to help
+    show a realistic side-by-side comparison of the value of utilizing SNAPconnect Futures. This script has the same
     functionality as the Futures implementation but is much harder to troubleshoot and much more prone to typos and bugs
     since there are many situations where you need to cross reference the same variable in 4 or 5 separate places.
     '''
@@ -21,10 +21,10 @@ class SNAPConnectDispatcher(object):
         :return:
         '''
 
-        logging.info('Initializing SNAP Connect instance.')
+        logging.info('Initializing SNAPconnect instance.')
 
-        # You have to manually register your callbacks using traditional SNAP Connect methods.
-        # It's possible to hide this behind-the-scenes and register them on the fly similar to how SNAP Connect Futures
+        # You have to manually register your callbacks using traditional SNAPconnect methods.
+        # It's possible to hide this behind-the-scenes and register them on the fly similar to how SNAPconnect Futures
         # handles it, but it would be more code than just registering the callbacks in this scenario.
         self.func = {
                     'simple_response' : self.simple_response,
@@ -76,13 +76,13 @@ class SNAPConnectDispatcher(object):
             if self.delay:
                 self.cause_temporary_outage(self.delay)
 
-            # Call the active_rpc method to kick of the rest of the state machine.
+            # Call the active_rpc method to kick off the rest of the state machine.
             self.active_rpc()
 
     def queue_callback_rpc(self, rpc_method, callback, retries=2, timeout=3, delay=None):
         '''
         An attempt at creating a method of queueing and storing data relevant to rpc calls in a reasonable fashion.
-        :param rpc_method: Direct reference to the method that needs to be queued
+        :param rpc_method: Direct reference to the method that needs to be queued.
         :param callback: str used to verify if the callback should be acted on.
         :param retries: num of retries before failing the current rpc.
         :param timeout: num of seconds to wait before retries.
@@ -105,7 +105,7 @@ class SNAPConnectDispatcher(object):
 
     def check_if_active(self, active_callback):
         '''
-        Check to see if the active callback is the callback we're current waiting and ignores it if not.
+        Check to see if the active callback is the callback we're current waiting on and ignores it if not.
         :param active_callback: str that correlates to the 'callback' str passed into queue_callback_rpc.
         :return:
         '''
@@ -113,7 +113,7 @@ class SNAPConnectDispatcher(object):
             logging.info('Ignoring callback: {}'.format(active_callback))
             return False
         else:
-            #unchedule the timeout counter if we got the callback we were waiting on.
+            #Unschedule the timeout counter if we got the callback we were waiting on.
             self.sc.scheduler.unschedule(self.timeout_event)
             return True
 
@@ -122,7 +122,7 @@ class SNAPConnectDispatcher(object):
 # -----------------------------------------------------------------------------
 
     # It's somewhat a matter of choice on whether you want to keep your call and responses separated.  If you only have
-    # 1 to 1 relationships, you can reorganize the code to be easier to follow, but things get complicated and harder
+    # 1 to 1 relationships, you can reorganize the code to be easier to follow. Things get complicated and harder
     # to read when you have some rpcs with no callbacks and some rpcs that may have multiple callbacks it needs to
     # handle or state machines it needs to interface with.
     def cause_temporary_outage(self, time):
@@ -191,7 +191,7 @@ class SNAPConnectDispatcher(object):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
 
-    # Generate a dispatcher and queue up the necc. rpc calls.
+    # Generate a dispatcher and queue up the necessary rpc calls.
     dispatch = SNAPConnectDispatcher(node_addr, serial_type, serial_port)
     dispatch.queue_callback_rpc(dispatch.simple_callback, 'simple_response')
     dispatch.queue_callback_rpc(dispatch.reset_explicit_counter, None, 0, 0)
